@@ -1,0 +1,76 @@
+name: Flutter Build, Release and Deploy
+#choose the branch in which CI/CD is running on
+"on":
+  push:
+    branches:
+      - main
+
+
+#Our first job is Run a flutter test and analyze
+
+jobs:
+  flutter_test:
+    name: Run flutter test and analyze
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "17.x"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.7"
+          channel: "stable"
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+#generate apk file
+  build_apk:
+    name: generate apk file
+    needs: [flutter_test]
+    runs-on: windows-latest
+    steps: 
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "17.x"
+       #setup the flutter environment
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.7"
+          channel: "stable"
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build apk
+        run: flutter build apk --split-per-abi --release
+      #Upload generated apk to the artifacts.
+      - uses: actions/upload-artifact@main
+        with:
+          name: app-armeabi-v7a-release
+          path: build/app/outputs/apk/release/app_release.apk
+#generate aab file
+  build_appbundle:
+    name: Generate appbundle files
+    needs: [flutter_test]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "17.x" 
+          #setup the flutter environment
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.16.7"
+          channel: "stable"
+      - name: Install dependencies
+        run: flutter pub get
+      - name: build aab
+        run: flutter build appbundle
+
+        #upload generated aab to the artifects
+      - uses: actions/upload-artifact@master
+        with:
+          name: release-appbundle
+          path: build/app/outputs/bundle/release/app_release.aab
