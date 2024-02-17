@@ -3,7 +3,7 @@ name: Flutter Build, Release and Deploy
 "on":
   push:
     branches:
-      - main
+      - cicd_pipeline
 
 
 #Our first job is Run a flutter test and analyze
