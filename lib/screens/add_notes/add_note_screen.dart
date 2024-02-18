@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sqlite/constants/string_constants.dart';
 import 'package:flutter_sqlite/model/note.dart';
 import 'package:flutter_sqlite/screens/add_notes/view_model/add_note_provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddNoteScreen extends StatelessWidget {
   const AddNoteScreen({super.key});
@@ -13,6 +14,23 @@ class AddNoteScreen extends StatelessWidget {
     final addNoteProvider = ChangeNotifierProvider((ref)=>AddNoteProvider());
     TextEditingController  descController = TextEditingController();
     FocusNode txtFocusNode = FocusNode();
+
+Future<void> addNotes(AddNoteProvider data)async{
+  if(descController.text.isNotEmpty){
+            int result =  await  data.onSubmitClicked(Note(description: descController.text),context);
+            if(result.isFinite){
+              Fluttertoast.showToast(msg: StringConstants.addNoteSuccess);
+              descController.text="";
+              
+             
+            }
+              }else{
+                Fluttertoast.showToast(msg: StringConstants.enterDescriptionError);
+              }
+          
+
+}
+
     return Scaffold(
       appBar: AppBar(title: const Text(StringConstants.addNote),
       leading:  InkWell(
@@ -51,19 +69,11 @@ class AddNoteScreen extends StatelessWidget {
       Padding(padding: EdgeInsets.only(top:30.h),
       child:Consumer(
         builder: (context,ref,child) {
-          final data = ref.watch(addNoteProvider);
+          final data = ref.watch(addNoteProvider) ;       
           return ElevatedButton(
-            onPressed: ()async{
-              if(descController.text.isNotEmpty){
-            int result = await  data.onSubmitClicked(Note(description: descController.text),context);
-            if(result.isFinite){
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Notes added successfully")));
-              Navigator.of(context).pop(true);
-            }
-              }else{
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please enter the description")));
-              }
-          
+            onPressed: (){
+              addNotes(data);
+              
             },
             
             style: ElevatedButton.styleFrom(
