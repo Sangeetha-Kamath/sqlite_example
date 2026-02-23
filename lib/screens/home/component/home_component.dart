@@ -26,13 +26,13 @@ class HomeComponent extends StatelessWidget {
         Text(title,
         textAlign: TextAlign.start,
         style: TextStyle(
-          fontSize: 12.sp,
+          fontSize: 12.spMin,
           fontWeight: FontWeight.bold,
           color: Colors.black
         ),),
          Text(description,
                  style: TextStyle(
-          fontSize: 12.sp,
+          fontSize: 12.spMin,
           overflow: TextOverflow.ellipsis,
           
           

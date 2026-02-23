@@ -74,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                       StringConstants.addNote,
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 13.sp,
+                          fontSize: 13.spMin,
                           fontWeight: FontWeight.w700),
                     ),
                   ))
